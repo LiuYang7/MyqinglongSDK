@@ -30,13 +30,13 @@ class MyQLEnv:
         self.s = requests.session()
         if token is None:
             token = self.getToken()
-            self.add('QL_TOKEN', token)
+            self.add('QL_TOKEN', token, '青龙TOKEN')
         else:
             # 判断有效期
             resp = self.add('QL_TOKEN', token)
             if 401 == resp['code']:
                 token = self.getToken()
-                self.add('QL_TOKEN', token)
+                self.add('QL_TOKEN', token, '青龙TOKEN')
 
     def getToken(self):
         url = f"{self.url}/open/auth/token?client_id={self.client_id}&client_secret={self.client_secret}"
@@ -46,15 +46,16 @@ class MyQLEnv:
         self.s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
         return token
 
-    def add(self, new_env, value):
+    def add(self, new_env, value, remarks):
         """
         添加环境变量
+        :param remarks:  新环境变量描述
         :param new_env: 新环境变量名
         :param value: 新环境变量值
         :return:  响应结果json
         """
         url = f"{self.url}/open/envs"
-        data = [{"value": value, "name": new_env}]
+        data = [{"value": value, "name": new_env, "remarks": remarks}]
         data = json.dumps(data)
         res = self.s.post(url=url, data=data)
         return res.json()
@@ -85,7 +86,7 @@ class MyQLEnv:
             value_list.append(i.get('value'))
         return zip(id_list, value_list)
 
-    def update(self, value, name, id, remarks=""):
+    def update(self, value, name, id, remarks):
         """
         更新环境变量
         :param value: 新值
