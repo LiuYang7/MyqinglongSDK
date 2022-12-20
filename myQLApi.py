@@ -33,7 +33,7 @@ class MyQLEnv:
             self.add('QL_TOKEN', token, '青龙TOKEN')
         else:
             # 判断有效期
-            resp = self.add('QL_TOKEN', token)
+            resp = self.add('QL_TOKEN', token, '青龙TOKEN')
             if 401 == resp['code']:
                 token = self.getToken()
                 self.add('QL_TOKEN', token, '青龙TOKEN')
